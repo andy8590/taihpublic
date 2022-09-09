@@ -1,0 +1,128 @@
+module.exports = {
+    name: "stats",
+  description: "stats command",
+    async execute(client, message, args, Discord) {
+
+        let name = message.author.username
+        const { GoogleSpreadsheet } = require('google-spreadsheet');
+        const { promisify } = require('util');
+
+        const doc = new GoogleSpreadsheet('none');
+
+        await doc.useServiceAccountAuth({
+            client_email: process.env.email,
+            private_key: process.env.private_key,
+        });
+
+
+        await doc.loadInfo(); // loads document properties and worksheets
+        console.log(doc.title);
+        const sheet = doc.sheetsByIndex[0];
+       // const sheet = await doc.addSheet({ headerValues: ["ID",'ShipName','Rarity','Nation','Type','Luck','Armor','Speed','Health','Firepower','Antiair','Torpedo','Evasion','Aviation','OilConsumptoion','Reload','Antisubmarine','Oxygen','Ammunition','Accuracy'] });
+
+        const rows = await sheet.getRows();
+       // const columns = await sheet.getColumns();
+
+
+
+        try { 
+        let x = 0
+         
+        while (args.toString().toLowerCase() != rows[x].ShipName.toString().toLowerCase() && x != 813) {
+
+            x= x+1
+            console.log(x);
+
+        }
+        if (x >= 813) {
+
+            message.channel.send("Can't find anything commander..");
+            return;
+
+
+
+        }
+
+        console.log(rows[x].ShipName);
+
+
+        let sName = rows[x].ShipName
+        let rarity = rows[x].Rarity
+        let nation = rows[x].Nation;
+        let hull = rows[x].Type;
+        let health = rows[x].Health;
+        let armor = rows[x].Armor;
+        let reload = rows[x].Reload;
+        let luck = rows[x].Luck;
+        let firepower = rows[x].Firepower;
+        let torpedo = rows[x].Torpedo;
+        let evasion = rows[x].Evasion;
+        let speed = rows[x].Speed;
+        let antiair = rows[x].Antiair;
+        let aviation = rows[x].Aviation;
+        let oilConsumption = rows[x].OilConsumptoion;
+        let accuracy = rows[x].Accuracy;
+        let antisubmarineWarfare = rows[x].Antisubmarine;
+
+
+        const texts = [`Hmm, stats on ${sName} think I have it..`, `Your looking for ${sName} correct?`, 'I think I have something in the file...', `${sName} huh, well I guess I'll look...`];
+
+        let text = texts[Math.floor(Math.random() * texts.length)];
+        if (sName == 'Taihou') {
+            text = 'My stats??! Here I promise I did not to edit anything hehehe...'
+            firepower = '969';
+            health = 'Infinite';
+            antisubmarineWarfare = antisubmarineWarfare + '** Divinity:** Goddess';
+        }
+        if (sName == 'Albacore') {
+            text = `Albacore!!! You you don't really want this do you?`
+            //firepower = '969';
+            health = '1';
+            torpedo = 'It hurts!!';
+            armor = 'Papier Mache';
+        }
+
+
+
+        const newEmb = new Discord.MessageEmbed()
+            .setColor('#6b4d9c')
+            //.setImage(pic)
+            .setTitle(sName)
+            .setDescription('**Level 125: **' + sName + '** Health: **' + health + '** Armor: **' + armor + '** Reload: **' + reload + '\n**Luck: **' + luck + '** Firepower: **' + firepower + '** Torpedo: **' + torpedo + '** Evasion: **' + evasion + '\n**Speed: **' + speed + '** Antiair: **' + antiair + '** Aviation: **' + aviation + '** OilConsumption: **' + oilConsumption + '\n**Accuracy: **' + accuracy + '** AntisubmarineWarfare: **' + antisubmarineWarfare +'\n **KAGA BOT** "inspired" command.');
+
+
+
+            //.setURL(sUrl);
+        //.addFields(
+        // {name: 'Rarity', value: 'test'},
+        // {name: 'Construction Time', value: 'test'},
+        // {name: 'Construction', value: 'Type: ' + 'test'},
+        // {name: 'Obtained by: ', value: 'test'}
+
+        // );
+
+
+
+        message.channel.send(text);
+        message.channel.send({ embeds: [newEmb] });
+        console.log(name + ' Stats: ' + sName);
+        // console.log('info1: '+ json['0'].wikiUrl);
+        // console.log(safedirectory);
+
+
+
+
+    
+    }
+        catch(e) {
+        console.log('Image did not load');
+        message.channel.send("Nothing here commander");
+        return;
+
+    }
+
+    
+ 
+    
+  }
+}
